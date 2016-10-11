@@ -1,12 +1,14 @@
 function [ output_args ] = descenteGradient( trainC1 )
-teta = [0; 0];
-tetaSuiv = [10; 10];
+teta = [-10; -10];
+tetaSuiv = [0; 0];
 
-while(sum(tetaSuiv - teta) < 1)
+while(sum(tetaSuiv - teta) > 1)
     diffTeta = [0;0];
+    teta = tetaSuiv;
     for i=1:size(trainC1, 1)
-        diffTeta(1, 1) = diffTeta(1, 1) + transpose(teta) * trainC1(1, i) - trainC1(2, i);
-        diffTeta(2, 1) = diffTeta(2, 1) + trainC1(1, i) * transpose(teta) * trainC1(1, i) - trainC1(2, i);
+        %diffTeta(1, 1) = 
+        diffTeta(1, 1) + teta * trainC1(i, 1) - trainC1(i, 2)
+        diffTeta(2, 1) = diffTeta(2, 1) + trainC1(i, 1) * transpose(teta) * trainC1(i, 1) - trainC1(i, 2);
     end
     attenuation = 0.01;
     tetaSuiv = teta - attenuation * diffTeta;
