@@ -1,18 +1,19 @@
 function [ output_args ] = descenteGradient( trainC1 )
-teta = [-10; -10];
-tetaSuiv = [0; 0];
+coefDir = -20;
+coefDirSuiv = 0;
 
-while(sum(tetaSuiv - teta) > 1)
-    diffTeta = [0;0];
-    teta = tetaSuiv;
+attenuation = 0.0008;
+
+while(abs(coefDir - coefDirSuiv) > 0.9)
+    coefDir = coefDirSuiv;
+    coefDirSuiv = 0;
     for i=1:size(trainC1, 1)
-        %diffTeta(1, 1) = 
-        diffTeta(1, 1) + teta * trainC1(i, 1) - trainC1(i, 2)
-        diffTeta(2, 1) = diffTeta(2, 1) + trainC1(i, 1) * transpose(teta) * trainC1(i, 1) - trainC1(i, 2);
+       coefDirSuiv = coefDirSuiv + trainC1(i, 2) - (coefDir * trainC1(i, 1)) * trainC1(i, 1);
     end
-    attenuation = 0.01;
-    tetaSuiv = teta - attenuation * diffTeta;
+    coefDirSuiv = coefDir + attenuation * coefDirSuiv;
 end
-output_args = teta;
+moyennes = mean(trainC1);
+W0 = moyennes(1, 2) - coefDirSuiv * moyennes(1, 1);
+output_args = [W0 coefDirSuiv];
 end
 
