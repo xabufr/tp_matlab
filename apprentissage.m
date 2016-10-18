@@ -1,9 +1,9 @@
 % Écrire myclassifier
 % Écrire extractTrainTest
-muSaumon = 14;
-sigmaSaumon = 4;
-muBar = 10;
-sigmaBar = 2;
+muSaumon = [9 9];
+sigmaSaumon = [1 0.1];
+muBar = [8 8];
+sigmaBar = [1 0.1];
 sizeVT = 1000;
 VTSaumon = mvnrnd(muSaumon,sigmaSaumon,	sizeVT);
 VTBar = mvnrnd(muBar,sigmaBar,sizeVT);
