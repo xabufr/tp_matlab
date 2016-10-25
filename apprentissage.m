@@ -1,44 +1,44 @@
 % Écrire myclassifier
 % Écrire extractTrainTest
-muSaumon = [12 12];
-sigmaSaumon = [4 0.4];
-muBar = [8 8];
-sigmaBar = [1 0.1];
+muC2 = [12 12];
+sigmaC2 = [4 0.4];
+muC1 = [8 8];
+sigmaC1 = [1 0.1];
 sizeVT = 1000;
-VTSaumon = mvnrnd(muSaumon,sigmaSaumon,	sizeVT);
-VTBar = mvnrnd(muBar,sigmaBar,sizeVT);
+VTC2 = mvnrnd(muC2,sigmaC2,	sizeVT);
+VTC1 = mvnrnd(muC1,sigmaC1,sizeVT);
 
 nbIter = 100;
 sizeTrain = 100;
-erreursSaumon = [];
-erreursBar = [];    
+erreursC2 = [];
+erreursC1 = [];    
 
-calculACI(VTSaumon, VTBar);
+%calculACI(VTC2, VTC1);
 % Calcul du PCA sur l'ensemble des échantillons
-[vecteursPopres, VTSaumonReduit, VTBarReduit] = calculPCA(VTSaumon, VTBar);
-vecteurProjectionACI = calculACI(VTSaumon, VTBar)
-matriceProjection = transpose(vecteurProjectionACI(:, 1));
+%[vecteursPopres, VTC2Reduit, VTC1Reduit] = calculPCA(VTC2, VTC1);
+%vecteurProjectionACI = calculACI(VTC2, VTC1)
+%matriceProjection = transpose(vecteurProjectionACI(:, 1));
 % Réduction en dimension par PCA
-VTSaumonReduit = projection(matriceProjection, VTSaumonReduit);
-VTBarReduit = projection(matriceProjection, VTBarReduit);
+%VTC2Reduit = projection(matriceProjection, VTC2Reduit);
+%VTC1Reduit = projection(matriceProjection, VTC1Reduit);
 
 for	i=1:nbIter
     % Exctraction des jeux de tests
-    [testBar, trainBar] = extractTestAndTrain(VTBarReduit, 10);
-    [testSaumon, trainSaumon] = extractTestAndTrain(VTSaumonReduit, 10);
-    modeleClassifieur = trainClassifier(trainBar, trainSaumon);
+    [testC1, trainC1] = extractTestAndTrain(VTC1, 10);
+    [testC2, trainC2] = extractTestAndTrain(VTC2, 10);
+    modeleClassifieur = trainClassifier(trainC1, trainC2);
 
     % Classification
-    ResBar = classifyVraisemblance(testBar,modeleClassifieur);
-    ResSaumon = classifyVraisemblance(testSaumon,modeleClassifieur);
+    ResC1 = classify(testC1,modeleClassifieur);
+    ResC2 = classify(testC2,modeleClassifieur);
     % Calculs des taux d'erreur
-    nbSaumonErreur = 2*size(ResSaumon,1) - sum(ResSaumon);
-    nbBarErreur = sum(ResBar) - size(ResBar,1);
-    tauxSaumon = (nbSaumonErreur * 100 / size(testSaumon, 1));
-    tauxBar = (nbBarErreur * 100 / size(testBar, 1));
-    erreursSaumon = [erreursSaumon tauxSaumon];
-    erreursBar = [erreursBar tauxBar];
+    nbC2Erreur = 2*size(ResC2,1) - sum(ResC2);
+    nbC1Erreur = sum(ResC1) - size(ResC1,1);
+    tauxC2 = (nbC2Erreur * 100 / size(testC2, 1));
+    tauxC1 = (nbC1Erreur * 100 / size(testC1, 1));
+    erreursC2 = [erreursC2 tauxC2];
+    erreursC1 = [erreursC1 tauxC1];
 end;
 hold on;
-plot([1:nbIter], erreursSaumon, 'r');
-plot([1:nbIter], erreursBar, 'b');
+plot([1:nbIter], erreursC2, 'r');
+plot([1:nbIter], erreursC1, 'b');
