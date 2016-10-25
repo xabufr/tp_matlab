@@ -13,17 +13,19 @@ sizeTrain = 100;
 erreursSaumon = [];
 erreursBar = [];    
 
+calculACI(VTSaumon, VTBar);
 % Calcul du PCA sur l'ensemble des échantillons
-[vecteursPopres, VTSaumonPCA, VTBarPCA] = calculPCA(VTSaumon, VTBar);
-matriceProjection = transpose(vecteursPopres(:, 1));
+[vecteursPopres, VTSaumonReduit, VTBarReduit] = calculPCA(VTSaumon, VTBar);
+vecteurProjectionACI = calculACI(VTSaumon, VTBar)
+matriceProjection = transpose(vecteurProjectionACI(:, 1));
 % Réduction en dimension par PCA
-VTSaumonPCA = projection(matriceProjection, VTSaumonPCA);
-VTBarPCA = projection(matriceProjection, VTBarPCA);
+VTSaumonReduit = projection(matriceProjection, VTSaumonReduit);
+VTBarReduit = projection(matriceProjection, VTBarReduit);
 
 for	i=1:nbIter
     % Exctraction des jeux de tests
-    [testBar, trainBar] = extractTestAndTrain(VTBarPCA, 10);
-    [testSaumon, trainSaumon] = extractTestAndTrain(VTSaumonPCA, 10);
+    [testBar, trainBar] = extractTestAndTrain(VTBarReduit, 10);
+    [testSaumon, trainSaumon] = extractTestAndTrain(VTSaumonReduit, 10);
     modeleClassifieur = trainClassifier(trainBar, trainSaumon);
 
     % Classification
