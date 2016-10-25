@@ -1,7 +1,7 @@
 % Écrire myclassifier
 % Écrire extractTrainTest
-muSaumon = [9 9];
-sigmaSaumon = [1 0.1];
+muSaumon = [12 12];
+sigmaSaumon = [4 0.4];
 muBar = [8 8];
 sigmaBar = [1 0.1];
 sizeVT = 1000;
@@ -11,15 +11,25 @@ VTBar = mvnrnd(muBar,sigmaBar,sizeVT);
 nbIter = 100;
 sizeTrain = 100;
 erreursSaumon = [];
-erreursBar = [];
-for	i=1:nbIter   
-    [testBar, trainBar] = extractTestAndTrain(VTBar, 10);
-    [testSaumon, trainSaumon] = extractTestAndTrain(VTSaumon, 10);
-    
+erreursBar = [];    
+
+% Calcul du PCA sur l'ensemble des échantillons
+[vecteursPopres, VTSaumonPCA, VTBarPCA] = calculPCA(VTSaumon, VTBar);
+matriceProjection = transpose(vecteursPopres(:, 1));
+% Réduction en dimension par PCA
+VTSaumonPCA = projection(matriceProjection, VTSaumonPCA);
+VTBarPCA = projection(matriceProjection, VTBarPCA);
+
+for	i=1:nbIter
+    % Exctraction des jeux de tests
+    [testBar, trainBar] = extractTestAndTrain(VTBarPCA, 10);
+    [testSaumon, trainSaumon] = extractTestAndTrain(VTSaumonPCA, 10);
     modeleClassifieur = trainClassifier(trainBar, trainSaumon);
 
-    ResBar = classify(testBar,modeleClassifieur);
-    ResSaumon = classify(testSaumon,modeleClassifieur);
+    % Classification
+    ResBar = classifyVraisemblance(testBar,modeleClassifieur);
+    ResSaumon = classifyVraisemblance(testSaumon,modeleClassifieur);
+    % Calculs des taux d'erreur
     nbSaumonErreur = 2*size(ResSaumon,1) - sum(ResSaumon);
     nbBarErreur = sum(ResBar) - size(ResBar,1);
     tauxSaumon = (nbSaumonErreur * 100 / size(testSaumon, 1));
