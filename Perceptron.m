@@ -1,5 +1,4 @@
 function [ ] = Perceptron( C1, C2 )
-
 v1 = ones(size(C1, 1), 1);
 v2 = ones(size(C2, 1), 1);
 Y = [v1 Cl; -v2 -Cl2];

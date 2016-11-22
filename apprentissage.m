@@ -20,9 +20,19 @@ erreursC3pourC2C3 = [];
 
 for	i=1:nbIter
     % Exctraction des jeux de tests
-    [testC1, trainC1] = extractTestAndTrain(x1, 10);
-    [testC2, trainC2] = extractTestAndTrain(x2, 10);
-    [testC3, trainC3] = extractTestAndTrain(x3, 10);
+    %[vecteursPopres, x1_red, x2_red, x3_red] = calculPCA(x1, x2, x3);
+    %matriceProjection = transpose(vecteursPopres(:, 1));
+    
+    vecteurProjectionACI = calculACI(x1, x2, x3)
+    matriceProjection = transpose(vecteurProjectionACI(:, 1));
+    
+    x1_red = projection(matriceProjection, x1);
+    x2_red = projection(matriceProjection, x2);
+    x3_red = projection(matriceProjection, x3);
+
+    [testC1, trainC1] = extractTestAndTrain(x1_red, 10);
+    [testC2, trainC2] = extractTestAndTrain(x2_red, 10);
+    [testC3, trainC3] = extractTestAndTrain(x3_red, 10);
     modeleClassifieurC1C2 = trainClassifier(trainC1, trainC2);
     modeleClassifieurC1C3 = trainClassifier(trainC1, trainC3);
     modeleClassifieurC2C3 = trainClassifier(trainC2, trainC3);
@@ -41,10 +51,3 @@ end;
 hold on;
 boites = [erreursC1pourC1C3 erreursC1pourC1C2 erreursC2pourC1C2 erreursC2pourC2C3 erreursC3pourC2C3 erreursC3pourC1C3 ];
 boxplot(boites, 'Labels', {'C1/C1C3','C1/C1C2','C2/C1C2','C2/C2C3','C3/C2C3','C3/C1C3'});
-
-% plot([1:nbIter], erreursC1pourC1C2, 'r');
-% plot([1:nbIter], erreursC1pourC1C3, '-dr');
-% plot([1:nbIter], erreursC2pourC1C2, 'g');
-% plot([1:nbIter], erreursC2pourC2C3, '-dg');
-% plot([1:nbIter], erreursC3pourC1C3, 'b');
-% plot([1:nbIter], erreursC3pourC2C3, '-db');
